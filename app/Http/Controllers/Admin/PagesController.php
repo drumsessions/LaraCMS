@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use App\Page;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\WorkWithPage;
+
+
 
 class PagesController extends Controller
 {
@@ -37,9 +41,12 @@ class PagesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(WorkWithPage $request)
     {
         //
+        Auth::user()->pages()->save(new Page($request->only(['title', 'url', 'content'])));
+
+        return redirect()->route('pages.index');
     }
 
     /**
@@ -72,9 +79,12 @@ class PagesController extends Controller
      * @param  \App\page  $page
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, page $page)
+    public function update(WorkWithPage $request, page $page)
     {
         //
+        $page->fill($request->only(['title', 'url', 'content']));
+        $page->save();
+        return redirect()->route('pages.index');
     }
 
     /**
